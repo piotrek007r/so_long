@@ -135,3 +135,57 @@
 // 	mlx_key_hook(vars.win, f, &vars);
 // 	mlx_loop(vars.mlx);
 // }
+
+
+
+
+
+
+
+
+/*
+void	ft_horizotal(t_vars *data, int color, int y)
+{
+	int	x;
+
+	x = 0;
+	while (x < WIDTH)
+	{
+		my_pixel_put(&data->img, x, y, color);
+		x++;
+	}
+}
+
+void	ft_vertical(t_vars *data, int color, int x)
+{
+	int	y;
+
+	y = 0;
+	while (y < HEIGHT)
+	{
+		my_pixel_put(&data->img, x, y, color);
+		y++;
+	}
+}
+
+void	ft_grid(t_vars *data, int color)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	while (y < HEIGHT)
+	{
+		printf("curr: y%d", y);
+		ft_horizotal(data, color, y);
+		y = y + 50;
+	}
+	while (x < WIDTH)
+	{
+		printf("curr: y%d", x);
+		ft_vertical(data, color, x);
+		x = x + 50;
+	}
+}
+*/

@@ -1,114 +1,119 @@
+#include "get_next_line/get_next_line.h"
 #include "so_long.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1200
+#define HEIGHT 900
 
-typedef struct s_data
+typedef struct s_img
 {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-}			t_data;
+}			t_img;
+
+typedef struct s_map
+{
+	int		fd;
+	int		cur_line;
+    int     width;
+    int     height;
+	char	*line;
+    char    **matrix;
+}			t_map;
+
+typedef struct s_obj
+{
+    int     width_px;
+    int     height_px;
+    void    *addr_obj;
+} t_obj;
 
 typedef struct s_vars
 {
 	void	*mlx;
 	void	*window;
-    t_data  img;
+	t_img	img;
+	t_map	map;
+    t_obj   obj;
 }			t_vars;
 
-void	my_pixel_put(t_data *img, int x, int y, int color)
+
+void	my_pixel_put(t_img *img, int x, int y, int color)
 {
 	int	offset;
 
-	//🚨 Line len is in bytes. WIDTH 800 len_line ~3200 (can differ for alignment)
 	offset = (img->line_length * y) + (x * (img->bits_per_pixel / 8));
-
 	*((unsigned int *)(offset + img->addr)) = color;
 }
 
-/*
- * 🔥 my_pixel_put
-*/
-void	ft_horizotal(t_vars *data, int color, int y)
+
+void ft_draw_el(t_vars *vars, char *lay_type)
 {
+    int i;
 
-    int x;
-
-    x = 0;
-    while(x < WIDTH)
+    vars->obj.addr_obj = mlx_xpm_file_to_image(vars->mlx, lay_type, &vars->obj.width_px,
+            &vars->obj.height_px);
+    i = 0;
+    while (vars->map.line[i] != '\n' && vars->map.line[i] != '\0')
     {
-        my_pixel_put(&data->img, x, y, color);
-        x++;
+        mlx_put_image_to_window(vars->mlx, vars->window, vars->obj.addr_obj, vars->obj.width_px * (1
+                    + i), vars->obj.height_px * vars->map.cur_line);
+        i++;
     }
+    
 }
 
-void	ft_vertical(t_vars *data, int color, int x)
+void	ft_draw_layer(t_vars *vars, char *lay_type)
 {
-    int y;
+	int	counter;
 
-    y = 0;
-    while(y < HEIGHT)
-    {
-        my_pixel_put(&data->img, x, y, color);
-        y++;
-    }
+	vars->map.fd = open("maps/small.ber", O_RDONLY);
+	vars->map.cur_line = 1;
+	counter = 0;
+	while (1)
+	{
+		vars->map.line = get_next_line(vars->map.fd);
+		if (vars->map.line)
+		{
+			ft_draw_el(vars, lay_type);
+			vars->map.cur_line++;
+		}
+		if (!vars->map.line)
+			break ;
+		else
+			free(vars->map.line);
+	}
+    close(vars->map.fd);
 }
 
-
-void	ft_grid(t_vars *data, int color)
+void	ft_draw_map(t_vars *vars)
 {
-    int x;
-    int y;
-
-    x = 0;
-    y = 0;
-    while(y < HEIGHT)
-    {
-        printf("curr: y%d", y);
-        ft_horizotal(data, color, y);
-        y = y + 50;
-    }
-    while(x < WIDTH)
-    {
-        printf("curr: y%d", x);
-        ft_vertical(data, color, x);
-        x = x + 50;
-    }
-}	
-
-void ft_put_tile(t_vars *vars)
-{
-    int width;
-    int height;
-    void *img;
-
-    img = mlx_xpm_file_to_image(vars->mlx, "floor_1.xpm", &width, &height);
-    if (img != NULL)
-    {
-        mlx_put_image_to_window(vars->mlx, vars->window, img, 50, 50);
-        mlx_put_image_to_window(vars->mlx, vars->window, img, 50 + width, 50);
-        mlx_put_image_to_window(vars->mlx, vars->window, img, 50 + 2 * width, 50);
-    }
+    ft_draw_layer(vars, "assets/floor_m.xpm");
+    // ft_set_matrix(vars);
+    // ft_draw_walls(vars);
 }
+
 int	ft_start(int keys, t_vars *vars)
 {
+    t_map map;
+
 	if (keys == XK_space)
-	{   
-        // printf("nie zasraj się\n");
-	    // ft_grid(vars, 0xff00);
-		ft_put_tile(vars);
+	{
+		// ft_grid(vars, 0xff00);
+		ft_draw_map(vars);
 	}
 	if (keys == XK_Escape)
 	{
+		mlx_destroy_image(vars->mlx, vars->img.img);
 		mlx_destroy_window(vars->mlx, vars->window);
 		mlx_destroy_display(vars->mlx);
 		free(vars->mlx);
 		exit(1);
 	}
-    // mlx_put_image_to_window(vars->mlx, vars->window, vars->img.img, 0, 0);
+	// mlx_put_image_to_window(vars->mlx, vars->window, vars->img.img, 0, 0);
+	return (1);
 }
 
 int	main(void)
@@ -126,9 +131,9 @@ int	main(void)
 		return (1);
 	}
 	vars.img.img = mlx_new_image(vars.mlx, WIDTH, HEIGHT);
-	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel, &vars.img.line_length,
-			&vars.img.endian); // to free
-    printf("bpp1: %d\n", vars.img.bits_per_pixel);
+	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel,
+			&vars.img.line_length,
+										&vars.img.endian); // to free
 	mlx_key_hook(vars.window, ft_start, &vars);
 	mlx_loop(vars.mlx);
 	mlx_destroy_window(vars.mlx, vars.window);
@@ -136,5 +141,3 @@ int	main(void)
 	free(vars.mlx);
 }
 
-//  compile line: gcc *.c -I./minilibx-linux -L./minilibx-linux -lmlx_Linux
-// 	-lXext -lX11 -lm
