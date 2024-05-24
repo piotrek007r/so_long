@@ -1,10 +1,10 @@
 NAME    = so_long
 
 CC      = gcc
-CFLAGS  = 
+CFLAGS  =
 LDFLAGS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 
-SRCS    = $(wildcard *.c) $(wildcard minilibx_linux/*.c) $(wildcard get_next_line/*.c)
+SRCS    = $(wildcard *.c) $(wildcard minilibx_linux/*.c) $(wildcard get_next_line/*.c) $(wildcard libft/*.c)
 OBJS    = $(SRCS:.c=.o)
 
 
@@ -14,7 +14,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -I./minilibx-linux -I./get_next_line -c $< -o $@
+	$(CC) $(CFLAGS) -I./minilibx-linux -I./get_next_line -I./libft -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
