@@ -1,7 +1,7 @@
 NAME    = so_long
 
 CC      = gcc
-CFLAGS  = 
+CFLAGS  = -Wall -Wextra
 LDFLAGS = -L./minilibx-linux -lmlx_Linux -lXext -lX11 -lm
 
 SRCS    = $(wildcard *.c) $(wildcard minilibx_linux/*.c) $(wildcard get_next_line/*.c) $(wildcard ft_printf/*.c) $(wildcard libft/*.c)

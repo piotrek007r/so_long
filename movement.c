@@ -4,8 +4,8 @@ void ft_move(t_vars *vars, char key)
 {
 	char dir;
 
-	
 	dir = ft_set_direction(vars, key);
+	printf("%c\n", dir);
 	if(dir == '1')
 		return ;
 	else if (dir == '0')
@@ -22,17 +22,20 @@ void ft_move(t_vars *vars, char key)
 	ft_rerender_map(vars);
 
 	vars->state.move_count++;
-	ft_printf("number of moves: %d\n", vars->state.move_count);
 }
 
 char ft_set_direction(t_vars *vars, char key)
 {
+
+	char c;
+
 	if(key == 'w')
-		return vars->map.matrix[vars->state.pos_y - 1][vars->state.pos_x];
+		c = vars->map.matrix[vars->state.pos_y - 1][vars->state.pos_x];
 	if(key == 's')
-		return vars->map.matrix[vars->state.pos_y + 1][vars->state.pos_x];
+		c = vars->map.matrix[vars->state.pos_y + 1][vars->state.pos_x];
 	if(key == 'a')
-		return vars->map.matrix[vars->state.pos_y][vars->state.pos_x - 1];
+		c = vars->map.matrix[vars->state.pos_y][vars->state.pos_x - 1];
 	if(key == 'd')
-		return vars->map.matrix[vars->state.pos_y][vars->state.pos_x + 1];
+		c = vars->map.matrix[vars->state.pos_y][vars->state.pos_x + 1];
+	return (c);
 }

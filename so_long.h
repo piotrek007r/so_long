@@ -1,7 +1,5 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
-# define WIDTH 1200
-# define HEIGHT 900
 # include "libft/libft.h"
 # include "get_next_line/get_next_line.h"
 # include "ft_printf/ft_printf.h"
@@ -52,6 +50,7 @@ typedef struct s_vars
 {
 	void	*mlx;
 	void	*window;
+	char 	*path;
 	t_img	img;
 	t_map	map;
 	t_obj	obj;

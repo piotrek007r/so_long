@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   drawing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piotr <piotr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 17:39:53 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/05/27 20:09:42 by piotr            ###   ########.fr       */
+/*   Updated: 2024/05/28 16:33:49 by pruszkie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ void ft_draw_el(t_vars *vars, char *lay_path, char lay_type)
     while (vars->map.line[i] != '\n' && vars->map.line[i] != '\0')
     {
 		if(vars->map.line[i] == lay_type)
-        	mlx_put_image_to_window(vars->mlx, vars->window, vars->obj.addr_obj, vars->obj.width_px * (1
-                    + i), vars->obj.height_px * vars->map.cur_line);
+        	mlx_put_image_to_window(vars->mlx, vars->window, vars->obj.addr_obj, vars->obj.width_px * (i), vars->obj.height_px * (vars->map.cur_line - 1));
 			if (vars->map.line[i] == 'P')
 			{
 				vars->state.pos_x = i;
@@ -37,7 +36,7 @@ void ft_draw_el(t_vars *vars, char *lay_path, char lay_type)
 void	ft_draw_layer(t_vars *vars, char *lay_path, char lay_type)
 {
 	vars->map.width = 0;
-	vars->map.fd = open("maps/small.ber", O_RDONLY);
+	vars->map.fd = open(vars->path, O_RDONLY);
 	if(vars->map.fd == -1)
 		exit (1); // to handle;
 	vars->map.cur_line = 1;

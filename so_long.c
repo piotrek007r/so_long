@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: piotr <piotr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 17:28:49 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/05/28 10:07:59 by piotr            ###   ########.fr       */
+/*   Updated: 2024/05/28 16:43:10 by pruszkie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,6 @@ void	ft_map_init(t_vars *vars)
 
 int	ft_action(int keys, t_vars *vars)
 {
-	// if (keys == XK_space)
-	// 	ft_map_init(vars);
 	if (keys == XK_w)
 		ft_move(vars, 'w');
 	if (keys == XK_s)
@@ -128,21 +126,54 @@ int	ft_action(int keys, t_vars *vars)
 	return (1);
 }
 
-int	main(void)
+	void ft_check_winsize(t_vars *vars)
+	{
+		int counter;
+
+		vars->map.width = 0;
+		vars->map.height = 0;
+
+		vars->map.fd = open(vars->path, O_RDONLY);
+		counter = 0;
+		while(1)
+		{
+			vars->map.line = get_next_line(vars->map.fd);
+			if(!vars->map.line)
+				break;
+			vars->map.width = ft_strlen(vars->map.line) - 1;
+			counter++;
+		}
+		vars->map.height = counter;
+		close(vars->map.fd);
+	}
+
+	void ft_check_args()
+	{
+		ft_printf("Error\nInawalid number of arguments!");
+		exit(1);
+	}
+
+int	main(int argc, char **argv)
 {
 	t_vars	vars;
 
+	if(argc != 2)
+		ft_check_args();
+	vars.path = argv[1];
+	printf("%s\n", vars.path);
 	vars.mlx = mlx_init();
 	if (!vars.mlx)
 		return (1);
-	vars.window = mlx_new_window(vars.mlx, WIDTH, HEIGHT, "window");
+	ft_check_winsize(&vars);
+	vars.window = mlx_new_window(vars.mlx, 60 * vars.map.width, 60 * vars.map.height, "window");
 	if (!vars.mlx)
 	{
 		mlx_destroy_display(vars.mlx);
 		free(vars.mlx);
 		return (1);
 	}
-	vars.img.img = mlx_new_image(vars.mlx, WIDTH, HEIGHT);
+
+	vars.img.img = mlx_new_image(vars.mlx, 60 * vars.map.width, 60 * vars.map.height);
 	vars.img.addr = mlx_get_data_addr(vars.img.img, &vars.img.bits_per_pixel,
 			&vars.img.line_length,
 										&vars.img.endian); // to free

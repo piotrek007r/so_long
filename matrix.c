@@ -6,10 +6,13 @@ void ft_set_matrix(t_vars *vars)
 
 	counter = 0;
 	vars->map.matrix = (char **)malloc(vars->map.height * sizeof(char *) + 1);
-	vars->map.fd = open("maps/small.ber", O_RDONLY);
+	vars->map.fd = open(vars->path, O_RDONLY);
 
-	while(vars->map.line = get_next_line(vars->map.fd))
+	while(1)
 	{
+		vars->map.line = get_next_line(vars->map.fd);
+		if(!vars->map.line)
+			break;
 		vars->map.matrix[counter] = (char *)malloc(vars->map.width + 1);
 		if (!vars->map.matrix[counter])
 			exit (1); // to handle ft_eescape
@@ -18,8 +21,6 @@ void ft_set_matrix(t_vars *vars)
 		counter++;
 	}
 	close(vars->map.fd);
-	// for(int i = 0; i < vars->map.height; i++)
-	// 	printf("%s\n", vars->map.matrix[i]);
 }
 
 void ft_update_matrix(t_vars *vars, char key)
@@ -45,5 +46,5 @@ void ft_update_matrix(t_vars *vars, char key)
 	{
 		vars->map.matrix[vars->state.pos_y][vars->state.pos_x + 1] = 'P';
 		vars->state.pos_x++;
-	}	
+	}
 }
