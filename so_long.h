@@ -1,13 +1,13 @@
 #ifndef SO_LONG_H
 # define SO_LONG_H
-# include "libft/libft.h"
-# include "get_next_line/get_next_line.h"
 # include "ft_printf/ft_printf.h"
+# include "get_next_line/get_next_line.h"
+# include "libft/libft.h"
 # include "minilibx-linux/mlx.h"
 # include <X11/keysym.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <stdbool.h>
 
 typedef struct s_img
 {
@@ -25,6 +25,7 @@ typedef struct s_map
 	int		width;
 	int		height;
 	bool	rectangular;
+	bool	path_clear;
 	char	*line;
 	char	**matrix;
 }			t_map;
@@ -50,18 +51,25 @@ typedef struct s_vars
 {
 	void	*mlx;
 	void	*window;
-	char 	*path;
+	char	*path;
 	t_img	img;
 	t_map	map;
 	t_obj	obj;
 	t_state	state;
 }			t_vars;
 
+// main
+
+void		ft_check_map(t_vars *vars);
+void		ft_map_init(t_vars *vars);
+int			ft_action(int keys, t_vars *vars);
+
 // utils
 
 void		my_pixel_put(t_img *img, int x, int y, int color);
 void		ft_clean_matrix(t_vars *vars);
 void		ft_close_app(t_vars *vars);
+void		ft_count_items(t_vars *vars);
 
 // drawing
 
@@ -78,13 +86,16 @@ void		ft_update_matrix(t_vars *vars, char key);
 
 void		ft_move(t_vars *vars, char key);
 char		ft_set_direction(t_vars *vars, char key);
+void		ft_render_moves(t_vars *vars);
+
+// checks
+
+void		ft_check_walls(t_vars *vars);
+void		ft_check_rectangular(t_vars *vars);
+void		ft_check_items(t_vars *vars);
+void		ft_flood_fill(t_vars *vars, int x, int y);
+void		ft_check_path(t_vars *vars);
+void		ft_check_winsize(t_vars *vars);
+void		ft_check_args(void);
 
 #endif
-
-
-/*
-if(vars->map.width != ft_strlen(vars->map.line) - 1 && (vars->map.width != 0))
-		{
-			ft_printf("Error\nMap is not rectangular!\n");
-		}
-*/

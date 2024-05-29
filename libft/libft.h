@@ -6,7 +6,7 @@
 /*   By: piotr <piotr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 16:08:06 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/05/27 10:13:05 by piotr            ###   ########.fr       */
+/*   Updated: 2024/05/29 16:35:43 by piotr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int					ft_isprint(int c);
 
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 size_t				ft_strlcat(char *dst, const char *src, size_t size);
-size_t					ft_strlen(const char *str);
+size_t				ft_strlen(const char *str);
 int					ft_strncmp(const char *str1, const char *str2, size_t n);
 char				*ft_strchr(const char *str, int z);
 char				*ft_strrchr(const char *str, int ch);
